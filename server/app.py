@@ -11,7 +11,10 @@ def create_app():
     # Import models so they are registered with SQLAlchemy
     from server.models import restaurant, pizza, restaurant_pizza
 
-    # Define routes here
+    # Import and register blueprints
+    from server.controllers.restaurant_controller import restaurant_bp
+    app.register_blueprint(restaurant_bp)
+
     @app.route("/")
     def index():
         return "Hello, Pizza API!"
