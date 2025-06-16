@@ -1,14 +1,17 @@
-from server import db
+from server.app import db
 
 class Pizza(db.Model):
     __tablename__ = 'pizzas'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    ingredients = db.Column(db.String(255), nullable=False)
-    
-    # Relationships
-    restaurant_pizzas = db.relationship('RestaurantPizza', backref='pizza', cascade="all, delete-orphan")
+    name = db.Column(db.String, nullable=False)
+    ingredients = db.Column(db.String, nullable=False)
 
-    def __repr__(self):
-        return f"<Pizza {self.name}>"
+    restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='pizza')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "ingredients": self.ingredients
+        }
