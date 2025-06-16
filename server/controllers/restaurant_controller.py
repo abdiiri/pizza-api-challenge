@@ -1,26 +1,38 @@
 from flask import Blueprint, jsonify, request
-from server import db
 from server.models.restaurant import Restaurant
+from server import db
 
-bp = Blueprint('restaurants', __name__, url_prefix='/restaurants')
+restaurant_controller = Blueprint('restaurant_controller', __name__)
 
-@bp.route('', methods=['GET'])
-def get_restaurants():
+# Get all restaurants
+@restaurant_controller.route('/restaurants', methods=['GET'])
+def get_all_restaurants():
     restaurants = Restaurant.query.all()
-    return jsonify([restaurant.to_dict() for restaurant in restaurants])
+    return jsonify([{
+        "id": r.id,
+        "name": r.name,
+        "address": r.address
+    } for r in restaurants])
 
-@bp.route('/<int:id>', methods=['GET'])
+# Get a single restaurant by ID
+@restaurant_controller.route('/restaurants/<int:id>', methods=['GET'])
 def get_restaurant(id):
     restaurant = Restaurant.query.get(id)
-    if restaurant:
-        return jsonify(restaurant.to_dict())
-    return jsonify({"error": "Restaurant not found"}), 404
+    if not restaurant:
+        return jsonify({"error": "Restaurant not found"}), 404
+    return jsonify({
+        "id": restaurant.id,
+        "name": restaurant.name,
+        "address": restaurant.address,
+        "pizzas": [{"id": p.id, "name": p.name, "ingredients": p.ingredients} for p in restaurant.pizzas]
+    })
 
-@bp.route('/<int:id>', methods=['DELETE'])
+# Delete a restaurant by ID
+@restaurant_controller.route('/restaurants/<int:id>', methods=['DELETE'])
 def delete_restaurant(id):
     restaurant = Restaurant.query.get(id)
-    if restaurant:
-        db.session.delete(restaurant)
-        db.session.commit()
-        return '', 204
-    return jsonify({"error": "Restaurant not found"}), 404
+    if not restaurant:
+        return jsonify({"error": "Restaurant not found"}), 404
+    db.session.delete(restaurant)
+    db.session.commit()
+    return '', 204  # No content response

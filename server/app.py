@@ -1,33 +1,21 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
-# ...existing code...
-
-@app.route("/")
-def index():
-    return "Hello, Pizza API!"
-
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
+from server import db
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('server.config')  # Make sure config.py exists and is correct
-
-    # Initialize extensions with app
+    app.config.from_object('server.config')
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate = Migrate(app, db)
 
     # Import models so they are registered with SQLAlchemy
     from server.models import restaurant, pizza, restaurant_pizza
 
-    # Register blueprints or routes if you have controllers
-    # from server.controllers.restaurant_controller import restaurant_bp
-    # app.register_blueprint(restaurant_bp)
+    # Define routes here
+    @app.route("/")
+    def index():
+        return "Hello, Pizza API!"
 
     return app
 
-# For Flask CLI to discover the app
 app = create_app()

@@ -1,25 +1,37 @@
-from flask import Blueprint, request, jsonify
-from server import db
+from flask import Blueprint, jsonify, request
 from server.models.restaurant_pizza import RestaurantPizza
-from server.models.restaurant import Restaurant
-from server.models.pizza import Pizza
+from server import db
 
-bp = Blueprint('restaurant_pizzas', __name__, url_prefix='/restaurant_pizzas')
+restaurant_pizza_controller = Blueprint('restaurant_pizza_controller', __name__)
 
-@bp.route('', methods=['POST'])
+# Create a new RestaurantPizza relationship
+@restaurant_pizza_controller.route('/restaurant_pizzas', methods=['POST'])
 def create_restaurant_pizza():
     data = request.get_json()
+    price = data.get('price')
+    restaurant_id = data.get('restaurant_id')
+    pizza_id = data.get('pizza_id')
 
-    # Validation for price range
-    if not (1 <= data['price'] <= 30):
+    if not (1 <= price <= 30):
         return jsonify({"errors": ["Price must be between 1 and 30"]}), 400
 
-    restaurant = Restaurant.query.get(data['restaurant_id'])
-    pizza = Pizza.query.get(data['pizza_id'])
+    new_rp = RestaurantPizza(price=price, restaurant_id=restaurant_id, pizza_id=pizza_id)
+    db.session.add(new_rp)
+    db.session.commit()
 
-    if restaurant and pizza:
-        restaurant_pizza = RestaurantPizza(price=data['price'], restaurant_id=data['restaurant_id'], pizza_id=data['pizza_id'])
-        db.session.add(restaurant_pizza)
-        db.session.commit()
-        return jsonify(restaurant_pizza.to_dict()), 201
-    return jsonify({"error": "Restaurant or Pizza not found"}), 404
+    return jsonify({
+        "id": new_rp.id,
+        "price": new_rp.price,
+        "pizza_id": new_rp.pizza_id,
+        "restaurant_id": new_rp.restaurant_id,
+        "pizza": {
+            "id": new_rp.pizza.id,
+            "name": new_rp.pizza.name,
+            "ingredients": new_rp.pizza.ingredients
+        },
+        "restaurant": {
+            "id": new_rp.restaurant.id,
+            "name": new_rp.restaurant.name,
+            "address": new_rp.restaurant.address
+        }
+    }), 201
