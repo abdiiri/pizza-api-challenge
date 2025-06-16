@@ -8,18 +8,15 @@ def seed():
         db.drop_all()
         db.create_all()
 
-        # Create sample restaurants with address
         r1 = Restaurant(name="Pizza Palace", address="123 Main St")
         r2 = Restaurant(name="Slice of Heaven", address="456 Elm St")
 
-        # Create sample pizzas with ingredients
         p1 = Pizza(name="Margherita", ingredients="Tomato, Mozzarella, Basil")
         p2 = Pizza(name="Pepperoni", ingredients="Tomato, Mozzarella, Pepperoni")
 
         db.session.add_all([r1, r2, p1, p2])
         db.session.commit()
 
-        # Create restaurant-pizza relationships with price
         rp1 = RestaurantPizza(restaurant_id=r1.id, pizza_id=p1.id, price=10.99)
         rp2 = RestaurantPizza(restaurant_id=r1.id, pizza_id=p2.id, price=12.99)
         rp3 = RestaurantPizza(restaurant_id=r2.id, pizza_id=p1.id, price=11.99)
