@@ -38,6 +38,7 @@ This is a RESTful API for a fictional pizza restaurant built with **Flask**, fol
 ## 2. Set up your virtual environment
  -pipenv install flask flask_sqlalchemy flask_migrate
  -pipenv shell
+ 
 ## 3.Set environment variable
 -export FLASK_APP=server/app.py
 ## 4.Initialize and migrate the database
@@ -46,8 +47,11 @@ This is a RESTful API for a fictional pizza restaurant built with **Flask**, fol
 -flask db upgrade
 
 ## 🚀 Running the App
--flask --app server.app:create_app run --port=5003
--Server will start at http://localhost:5003
+- flask --app server.app:create_app run --port=5000
+
+- Server will start at http://localhost:5000
+
+
 
 ## 📥 Example Requests and Responses
 ✅ GET /restaurants
@@ -84,4 +88,5 @@ GET /pizzas
 POST /restaurant_pizzas
 # Author
 Name : Abdirizak Hassan Farah
-GitHub : 
+
+GitHub : https://github.com/abdiiri
