@@ -46,13 +46,6 @@ This is a RESTful API for a fictional pizza restaurant built with **Flask**, fol
 -flask db migrate -m "Initial migration"
 -flask db upgrade
 
-## 🚀 Running the App
-- flask --app server.app:create_app run --port=5000
-
-- Server will start at http://localhost:5000
-
-
-
 ## 📥 Example Requests and Responses
 ✅ GET /restaurants
 Request:
