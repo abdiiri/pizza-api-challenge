@@ -2,6 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+# ...existing code...
+
+@app.route("/")
+def index():
+    return "Hello, Pizza API!"
+
 # Initialize extensions
 db = SQLAlchemy()
 migrate = Migrate()
